@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>JOKER FORTUNA</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&family=Russo+One&display=swap"
+        rel="stylesheet" />
+
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+
+
+
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="stylesheet" href="./styles/py-bubbles.css" />
+
+
+    <script>
+        const PIXEL_ID = "905621785666000";
+        !(function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+                n.callMethod
+                    ? n.callMethod.apply(n, arguments)
+                    : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = "2.0";
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+        })(
+            window,
+            document,
+            "script",
+            "https://connect.facebook.net/en_US/fbevents.js"
+        );
+        fbq("init", PIXEL_ID);
+        fbq("track", "ViewContent");
+
+    </script>
+
+</head>
+
+<body class="lbody">
+
+    <div id="loading-overlay" class="hidden">
+        <img src="./assets/svg/Spin@1x-1.0s-200px-200px.svg" alt="Cargando...">
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <div class="screen">
+        <div class="card">
+            <!-- <h1 class="title">TRIPLICAMOS TU CARGA</h1> -->
+            <div class="logo">
+                <img src="./assets/images/landing/logo/logo.png" alt="CLUBWONBET LOGO" class="icon" />
+            </div>
+
+            <p class="subtitle">
+                <img src="./assets/images/landing/gem-stone.png" alt="🔥" class="fire" />
+                JOKER FORTUNA
+                <img src="./assets/images/landing/gem-stone.png" alt="🔥" class="fire" />
+            </p>
+            <p class="highlight">PAGANDO PREMIOS LAS 24HS
+            </p>
+
+
+            <!-- HTML -->
+            <button class="cta-button openWpp" id="Btn" aria-label="Ir a WhatsApp ahora">
+                <span class="cta-text">RECLAMAR BONO</span>
+            </button>
+            <div class="examples-container">
+                <span id="example-text" class="examples-text"></span>
+            </div>
+        </div>
+
+
+
+        <section class="carousel-section">
+            <h2>JUEGOS MAS JUGADOS</h2>
+            <div class="carousel">
+                <ul class="carousel-track" id="track"></ul>
+            </div>
+        </section>
+
+
+
+        <footer class="watermark">
+            <p>
+                © 2025 ArgyStudios. Todos los derechos reservados.
+            </p>
+        </footer>
+
+
+
+
+
+
+
+        <script>
+            window.addEventListener('load', () => {
+                const track = document.getElementById('track');
+                const folderRoute = "./assets/images/landing/carrousel";
+                const totalImages = 15;
+
+                // 1. Agregar slides originales
+                for (let i = 1; i <= totalImages; i++) {
+                    const li = document.createElement('li');
+                    li.className = 'carousel-item';
+                    const img = document.createElement('img');
+                    img.src = `${folderRoute}/slide ${i}.webp`;
+                    img.loading = 'lazy';
+                    li.appendChild(img);
+                    track.appendChild(li);
+                }
+
+                // 2. Clonar TODOS los originales — el track queda 2x
+                // La animación va de 0 a -50%, que es exactamente el ancho original
+                Array.from(track.children).forEach(slide => {
+                    track.appendChild(slide.cloneNode(true));
+                });
+            });
+        </script>
+        <script src="./js/basic-main.js" defer></script>
+        <script src="./js/py-bubbles.js" defer></script>
+
+</body>
+
+</html>
