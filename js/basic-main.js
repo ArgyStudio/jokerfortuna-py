@@ -12,14 +12,13 @@ const PIXEL_ID_SAFE = typeof PIXEL_ID === 'string' && PIXEL_ID ? PIXEL_ID : null
 const VISIT_UUID = crypto.randomUUID();
 
 const WA_NUMBERS = [
-    '5491164486165',
     '5491168818355',
     '5491168819633',
 ];
 
 const WA_LINES_BY_REF = new Map([
     ['ld', '5491164486165'],
-    ['pr', '5491168818355'],
+    ['pr', '5491168819633'],
 ]);
 
 function pickWhatsAppLine() {
