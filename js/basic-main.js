@@ -12,13 +12,14 @@ const PIXEL_ID_SAFE = typeof PIXEL_ID === 'string' && PIXEL_ID ? PIXEL_ID : null
 const VISIT_UUID = crypto.randomUUID();
 
 const WA_NUMBERS = [
+    '5491164486165',
     '5491168818355',
     '5491168819633',
 ];
 
 const WA_LINES_BY_REF = new Map([
     ['ld', '5491164486165'],
-    ['pr', '5491168819633'],
+    ['pr', '5491168818355'],
 ]);
 
 function pickWhatsAppLine() {
@@ -83,6 +84,10 @@ async function ingestVisit() {
         fbclid,
         fbc,
         fbp,
+        // Forwarded by the backend to Meta CAPI as event_source_url. Helps Meta
+        // attribute the Lead/Purchase to this exact landing URL (improves EMQ
+        // and is required for AEM iOS attribution per verified domain).
+        event_source_url: window.location.href,
         visit_time_ms: Date.now(),
     };
 
@@ -120,6 +125,17 @@ document.getElementById('Btn').addEventListener('click', () => {
     const lineNumber = pickWhatsAppLine();
     const msg = WA_MESSAGE(VISIT_UUID);
     const url = `https://wa.me/${lineNumber}?text=${encodeURIComponent(msg)}`;
+
+    // Standard Meta event "Contact" — fired the moment the user commits to
+    // initiate a conversation. Distinct from the CAPI Lead event (which only
+    // fires once the message actually lands in Kommo). Helps Meta build a
+    // warmer audience model and gives a click-funnel view in Events Manager.
+    if (typeof fbq === 'function') {
+        fbq('track', 'Contact', {
+            content_name: 'whatsapp_click',
+            content_category: 'wa_button',
+        });
+    }
 
     // Click happens whether or not /ingest finished — we still have VISIT_UUID locally.
     // The Lambda is idempotent on (uuid, client_id), so a late ingest arriving
