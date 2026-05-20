@@ -17,7 +17,7 @@ const WA_NUMBERS = [
 ];
 
 const WA_LINES_BY_REF = new Map([
-    ['ld', '5491164486165'],
+    ['ld', '5491168819633'],
     ['pr', '5491168818355'],
 ]);
 
