@@ -34,6 +34,12 @@ const WA_MESSAGE = (uuid) =>
 
 let ingestDone = false;
 
+// Canonical visit uuid. Defaults to the locally-generated one, but /ingest may
+// return a DIFFERENT uuid when it dedups by fbclid (a re-POST of the same click):
+// it keeps the existing visit and returns ITS uuid. The WA code must use that one,
+// otherwise it points to a uuid that was never stored ("Visit not found").
+let resolvedUuid = VISIT_UUID;
+
 function parseCookies() {
     return document.cookie.split('; ').reduce((acc, kv) => {
         const [k, ...v] = kv.split('=');
@@ -104,6 +110,10 @@ async function ingestVisit() {
         }
 
         const data = await resp.json().catch(() => null);
+        // Adopt the uuid the backend actually stored. On an fbclid re-POST it
+        // returns the existing visit's uuid (not the one we sent), so the WA code
+        // matches a real visit instead of failing with "Visit not found".
+        if (data && data.uuid) resolvedUuid = data.uuid;
         console.log('[ingest] ok', data);
     } catch (err) {
         console.error('[ingest] error', err);
@@ -122,7 +132,7 @@ document.getElementById('Btn').addEventListener('click', () => {
     document.getElementById('loading-overlay').classList.remove('hidden');
 
     const lineNumber = pickWhatsAppLine();
-    const msg = WA_MESSAGE(VISIT_UUID);
+    const msg = WA_MESSAGE(resolvedUuid);
     const url = `https://wa.me/${lineNumber}?text=${encodeURIComponent(msg)}`;
 
     // Standard Meta event "Contact" — fired the moment the user commits to
@@ -136,11 +146,13 @@ document.getElementById('Btn').addEventListener('click', () => {
         });
     }
 
-    // Click happens whether or not /ingest finished — we still have VISIT_UUID locally.
-    // The Lambda is idempotent on (uuid, client_id), so a late ingest arriving
-    // after the user already messaged does not create a duplicate visit row.
+    // Click happens whether or not /ingest finished. If it resolved, resolvedUuid
+    // holds the canonical uuid; otherwise we fall back to the local VISIT_UUID.
+    // The Lambda is idempotent on (uuid, client_id), so a late ingest does not
+    // create a duplicate. NOTE: on an fbclid re-POST where the user clicks BEFORE
+    // /ingest resolves, we still send the local uuid (rare — ingest is fast).
     if (!ingestDone) {
-        console.log('[click] proceeding with wa.me before /ingest resolved');
+        console.log('[click] proceeding with wa.me before /ingest resolved (local uuid)');
     }
 
     window.location.href = url;
